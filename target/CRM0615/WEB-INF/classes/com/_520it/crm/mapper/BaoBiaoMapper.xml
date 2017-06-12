@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.BaoBiaoMapper">
+    <resultMap id="BaseResultMap" type="com._520it.crm.vo.PetServiceVO">
+        <result column="serviceProject" property="groupByServiceName"></result>
+        <result column="totalNumber" property="totalNumber"></result>
+        <result column="totalAmount" property="totalAmount"></result>
+    </resultMap>
+    <resultMap id="StockResultMap" type="com._520it.crm.vo.StockAllVO">
+        <result column="groupByStockName" property="groupByStockName"></result>
+        <result column="totalNumber" property="totalNumber"></result>
+        <result column="totalAmount" property="totalAmount"></result>
+    </resultMap>
+    <sql id="condition_sql">
+
+    </sql>
+    <!-- 宠物服务 -->
+    <select id="queryPetServiceData" resultMap="BaseResultMap">
+    select serviceProject,count(serviceProject) as totalNumber ,sum(servicePrice) as totalAmount from `petservice` group by serviceProject
+        <include refid="condition_sql"/>
+        limit #{start},#{rows}
+	</select>
+    <select id="queryCount" resultType="java.lang.Long">
+        select count(*) from (select serviceProject,count(serviceProject) as totalNumber ,sum(servicePrice) as
+        totalAmount from `petservice` group by serviceProject) count
+        <include refid="condition_sql"/>
+    </select>
+    <select id="queryPetServiceDataForPie" resultMap="BaseResultMap">
+        select serviceProject,count(serviceProject) as totalNumber ,sum(servicePrice) as totalAmount from `petservice` group by serviceProject
+    </select>
+	<!-- 库存的查询(品牌) -->
+	<select id="queryStockData" resultMap="StockResultMap">
+    select brand as groupByStockName,sum(stockNumber) as totalNumber ,sum(stockAmount) as totalAmount from `productstock` group by brand
+        <include refid="condition_sql"/>
+        limit #{start},#{rows}
+	</select>
+    <select id="queryStockCount" resultType="java.lang.Long">
+        select count(*) from (select brand,sum(stockNumber) as totalNumber ,sum(stockAmount) as totalAmount from `productstock` group by brand) count
+        <include refid="condition_sql"/>
+    </select>
+     <select id="queryBrandDataForPie" resultMap="StockResultMap">
+        select brand as groupByStockName,sum(stockNumber) as totalNumber ,sum(stockAmount) as totalAmount from `productstock` group by brand
+    </select>
+	<!-- 库存的查询(分类) -->
+	<select id="queryStockKindData" resultMap="StockResultMap">
+    select kind as groupByStockName,sum(stockNumber) as totalNumber ,sum(stockAmount) as totalAmount from `productstock` group by kind
+        <include refid="condition_sql"/>
+        limit #{start},#{rows}
+	</select>
+    <select id="queryStockKindCount" resultType="java.lang.Long">
+        select count(*) from (select kind,sum(stockNumber) as totalNumber ,sum(stockAmount) as totalAmount from `productstock` group by kind) count
+        <include refid="condition_sql"/>
+    </select>
+     <select id="queryKindDataForPie" resultMap="StockResultMap">
+       select kind as groupByStockName,sum(stockNumber) as totalNumber ,sum(stockAmount) as totalAmount from `productstock` group by kind
+    </select>
+</mapper>

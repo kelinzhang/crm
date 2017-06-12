@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.RechargeMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.Recharge" >
+    <id column="id" property="id"  />
+	<result column="pay" property="pay"  />
+	<result column="payDate" property="payDate"  />
+	<result column="sn" property="sn"  />
+	<result column="remark" property="remark"  />
+      <association property="member" javaType="com._520it.crm.domain.Member">
+          <id column="member_id" property="id"></id>
+          <result column="member_number" property="number"/>
+          <result column="member_name" property="name"/>
+          <result column="member_credit" property="credit"/>
+      </association>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from recharge where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.Recharge" useGeneratedKeys="true" keyProperty="id" >
+    insert into recharge 
+    (member_id,pay,payDate,remark,sn)
+    values 
+    (#{member.id},#{pay},#{payDate},#{remark},#{sn})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Recharge" >
+    update recharge
+    set
+	    member_id=#{member.id},
+	    pay=#{pay},
+	    payDate=#{payDate},
+	    sn=#{sn},
+	    remark=#{remark}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from recharge where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from recharge
+  </select>
+  <sql id="conditionSql">
+  	<where>
+        <if test="rechargeId!=null">
+            and (r.sn like concat('%',#{rechargeId},'%') )
+        </if>
+        <if test="tel!=null">
+            and (m.number like concat('%',#{tel},'%') )
+        </if>
+        <if test="memberName!=null">
+            and (m.name like concat('%',#{memberName},'%') )
+        </if>
+  	</where>
+  </sql>
+  <select id="queryByCondictionCount" resultType="long">
+  	select count(*) from recharge r left join member m on (m.id=r.member_id)
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryByConditionResult" resultMap="BaseResultMap">
+  	select  r.id,r.sn,r.payDate,r.pay,r.remark,m.id as member_id,m.number as member_number,m.name as member_name,m.credit as member_credit
+      from recharge r left join member m on (m.id=r.member_id)
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+</mapper>

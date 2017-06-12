@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.ProductMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.Product" >
+    <id column="id" property="id"  />
+	<result column="costNumber" property="costNumber"  />
+	<result column="proName" property="proName"  />
+	<result column="saleNumber" property="saleNumber"  />
+	<association property="brand" javaType="com._520it.crm.domain.ProductBrand"
+		select="com._520it.crm.mapper.ProductBrandMapper.selectByPrimaryKey"
+		column="brand_id"
+	></association>
+	<association property="kind" javaType="com._520it.crm.domain.ProductKind"
+		select="com._520it.crm.mapper.ProductKindMapper.selectByPrimaryKey"
+		column="kind_id"
+	></association>
+     
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from product where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.Product" useGeneratedKeys="true" keyProperty="id" >
+    insert into product 
+    (costNumber,brand_id,proName,saleNumber,kind_id)
+    values 
+    (#{costNumber},#{brand.id},#{proName},#{saleNumber},#{kind.id})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Product" >
+    update product
+    set
+	    costNumber=#{costNumber},
+	    brand_id=#{brand.id},
+	    kind_id=#{kind.id},
+	    saleNumber=#{saleNumber},
+	    proName=#{proName}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from product where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from product
+  </select>
+  <sql id="conditionSql">
+  	<where>
+  		
+  		<if test="brandName!=null">
+  			and brand_id =${brandName}
+  		</if>
+  		<if test="kindName!=null">
+  			and kind_id=${kindName}
+  		</if>
+  		<if test="keyword!=null" >
+  			and proName like concat('%','${keyword}','%')
+  		</if>
+  	</where>
+  </sql>
+  <select id="queryByCondictionCount" resultType="long">
+  	select count(*) from product
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryByConditionResult" resultMap="BaseResultMap">
+  	select * from product
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+</mapper>

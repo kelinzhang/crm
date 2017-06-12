@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.ProductStockMapper">
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.ProductStock">
+        <id column="id" property="id"/>
+        <result column="proName" property="proName"/>
+        <result column="stockNumber" property="stockNumber"/>
+        <result column="proSn" property="proSn"/>
+        <result column="stockPrice" property="stockPrice"/>
+        <result column="brand" property="brand"/>
+        <result column="stockAmount" property="stockAmount"/>
+        <result column="kind" property="kind"/>
+        <result column="supplier" property="supplier"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="long">
+    delete from productStock where id = #{id}
+  </delete>
+    <insert id="insert" parameterType="com._520it.crm.domain.ProductStock" useGeneratedKeys="true" keyProperty="id">
+    insert into productStock 
+    (proName,stockNumber,proSn,stockPrice,brand,stockAmount,kind,supplier)
+    values 
+    (#{proName},#{stockNumber},#{proSn},#{stockPrice},#{brand},#{stockAmount},#{kind},#{supplier})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.ProductStock">
+        update productStock
+        <set>
+            <if test="proName!=null">
+                proName=#{proName},
+            </if>
+            <if test="stockNumber!=null">
+                stockNumber=#{stockNumber},
+            </if>
+            <if test="proSn!=null">
+                proSn=#{proSn},
+            </if>
+            <if test="stockPrice!=null">
+                stockPrice=#{stockPrice},
+            </if>
+            <if test="brand!=null">
+                brand=#{brand},
+            </if>
+            <if test="stockAmount!=null">
+                stockAmount=#{stockAmount},
+            </if>
+            <if test="kind!=null">
+                kind=#{kind},
+            </if>
+            <if test="supplier!=null">
+                supplier=#{supplier}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long">
+    select * from productStock where id = #{id}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select * from productStock
+  </select>
+    <sql id="conditionSql">
+        <where>
+            <if test="proSn!=null">
+                proSn like concat('%',#{proSn},'%')
+            </if>
+            <if test="proName!=null">
+                and proName like concat('%',#{proName},'%')
+            </if>
+            <if test="kind!=null">
+                and kind = #{kind}
+            </if>
+            <if test="brand!=null">
+                and brand = #{brand}
+            </if>
+            <if test="supplier!=null">
+                and supplier = #{supplier}
+            </if>
+        </where>
+    </sql>
+    <select id="queryByCondictionCount" resultType="long">
+        select count(*) from productStock
+        <include refid="conditionSql"/>
+    </select>
+    <select id="queryByConditionResult" resultMap="BaseResultMap">
+        select * from productStock
+        <include refid="conditionSql"/>
+        limit #{start},#{rows}
+    </select>
+    <select id="getPsByIncomeItem" resultMap="BaseResultMap">
+        select * from productStock where proSn=#{proSn} and supplier=#{supplier}
+    </select>
+</mapper>

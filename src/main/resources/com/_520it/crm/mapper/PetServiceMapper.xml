@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.PetServiceMapper">
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.PetService">
+        <id column="id" property="id"/>
+        <result column="personName" property="personName"/>
+        <result column="petName" property="petName"/>
+        <result column="tel" property="tel"/>
+        <result column="serviceProject" property="serviceProject"/>
+        <result column="servicePrice" property="servicePrice"/>
+        <result column="beforePrice" property="beforePrice"/>
+        <result column="afterPrice" property="afterPrice"/>
+        <result column="currentState" property="currentState"/>
+        <result column="times" property="times"/>
+        <result column="startDateTime" property="startDateTime"/>
+        <result column="endDateTime" property="endDateTime"/>
+    </resultMap>
+    <insert id="insert" parameterType="com._520it.crm.domain.PetService" useGeneratedKeys="true" keyProperty="id">
+        insert into petService (personName,petName,tel,state,currentState,servicePrice,startDateTime,serviceProject,beforePrice,afterPrice) values
+        (#{personName},#{petName},#{tel},#{state},#{currentState},#{servicePrice},#{startDateTime},(select text from petMenu where id = cast(#{serviceProject} as signed)),#{beforePrice},#{afterPrice})
+    </insert>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long">
+        select * from petService where id = #{id}
+     </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select * from petService
+    </select>
+    <sql id="conditionSql">
+        <where>
+            <if test="keyname!=null">
+                petName like concat('%',#{keyname},'%')
+            </if>
+            <if test="keytel!=null">
+                and tel like concat('%',#{keytel},'%')
+            </if>
+            <if test="keyCurState!=null">
+                and currentState like #{keyCurState}
+            </if>
+        </where>
+    </sql>
+    <select id="queryByCondictionCount" resultType="long">
+        select count(*) from petService
+        <include refid="conditionSql"/>
+    </select>
+    <select id="queryByConditionResult" resultMap="BaseResultMap">
+        select * from petService
+        <include refid="conditionSql"/>
+        limit #{start},#{rows}
+    </select>
+    <select id="queryOnePetService" resultMap="BaseResultMap">
+        select * from petService where id = #{id}
+    </select>
+    <update id="updateByPayForPetService" parameterType="com._520it.crm.domain.PetService">
+        update petService
+        <set>
+            <if test="personName!=null">
+                personName=#{personName},
+            </if>
+            <if test="petName!=null">
+                petName=#{petName},
+            </if>
+            <if test="tel!=null">
+                tel=#{tel},
+            </if>
+            <if test="serviceProject!=null">
+                serviceProject=#{serviceProject},
+            </if>
+            <if test="servicePrice!=null">
+                servicePrice=#{servicePrice},
+            </if>
+            <if test="beforePrice!=null">
+                beforePrice=#{beforePrice},
+            </if>
+            state=1,
+            <if test="currentState!=null">
+                currentState=#{currentState},
+            </if>
+            <if test="afterPrice!=null">
+                afterPrice=#{afterPrice},
+            </if>
+            <if test="times!=null">
+                times=#{times},
+            </if>
+            <if test="startDateTime!=null">
+                startDateTime=#{startDateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.PetService">
+        update petService
+        <set>
+            <if test="personName!=null">
+                personName=#{personName},
+            </if>
+            <if test="petName!=null">
+                petName=#{petName},
+            </if>
+            <if test="tel!=null">
+                tel=#{tel},
+            </if>
+            <if test="serviceProject!=null">
+                serviceProject=#{serviceProject},
+            </if>
+            <if test="servicePrice!=null">
+                servicePrice=#{servicePrice},
+            </if>
+            <if test="beforePrice!=null">
+                beforePrice=#{beforePrice},
+            </if>
+            <if test="state!=null">
+              state=#{state},
+            </if>
+            <if test="currentState!=null">
+                currentState=1,
+            </if>
+            <if test="afterPrice!=null">
+                afterPrice=#{afterPrice},
+            </if>
+            <if test="times!=null">
+                times=#{times},
+            </if>
+            <if test="startDateTime!=null">
+                startDateTime=#{startDateTime},
+            </if>
+            <if test="endDateTime!=null">
+                endDateTime=#{endDateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

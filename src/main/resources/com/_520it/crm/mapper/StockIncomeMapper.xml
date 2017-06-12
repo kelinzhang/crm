@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.StockIncomeMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.StockIncome" >
+    <id column="id" property="id"  />
+	<result column="sn" property="sn"  />
+	<result column="vdate" property="vdate"  />
+	<result column="totalAmount" property="totalAmount"  />
+	<result column="totalNumber" property="totalNumber"  />
+	<result column="inputUser_id" property="inputUser.id"  />
+	<result column="supplier" property="supplier"  />
+	<!--<result column="items" property="items"  />-->
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from stockIncome where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.StockIncome" useGeneratedKeys="true" keyProperty="id" >
+    insert into stockIncome 
+    (sn,vdate,totalAmount,totalNumber,inputUser_id,supplier)
+    values 
+    (#{sn},#{vdate},#{totalAmount},#{totalNumber},#{inputUser.id},#{supplier})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.StockIncome" >
+    update stockIncome
+    set
+	    sn=#{sn},
+	    vdate=#{vdate},
+	    totalAmount=#{totalAmount},
+	    totalNumber=#{totalNumber},
+	    inputUser_id=#{inputUser.id},
+	    supplier=#{supplier}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from stockIncome where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from stockIncome
+  </select>
+  <sql id="conditionSql">
+  	<where>
+  	</where>
+  </sql>
+  <select id="queryByCondictionCount" resultType="long">
+  	select count(*) from stockIncome
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryByConditionResult" resultMap="BaseResultMap">
+  	select * from stockIncome
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+    <insert id="insertRelation">
+        insert into stockIncomeItem (proSn,proName,kind,brand,supplier,incomeNumber,incomePrice,incomeAmount,stockIn_id)
+          VALUES (#{proSn},#{proName},#{kind},#{brand},#{supplier},#{incomeNumber},#{incomePrice},#{incomeAmount},#{stockIn.id})
+    </insert>
+    <select id="getItemCount" resultType="long">
+        select count(*) from stockIncomeItem where stockIn_id=#{id}
+    </select>
+    <select id="getItems" resultType="com._520it.crm.domain.StockIncomeItem">
+        select * from stockIncomeItem where stockIn_id=#{id}
+    </select>
+</mapper>

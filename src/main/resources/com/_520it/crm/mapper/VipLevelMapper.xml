@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.VipLevelMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.VipLevel" >
+    <id column="id" property="id"  />
+	<result column="levelName" property="levelName"  />
+	<result column="levelServiceDisCount" property="levelServiceDisCount"  />
+	<result column="levelProducteDisCount" property="levelProducteDisCount"  />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from vipLevel where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.VipLevel" useGeneratedKeys="true" keyProperty="id" >
+    insert into vipLevel 
+    (levelName,levelServiceDisCount,levelProducteDisCount)
+    values 
+    (#{levelName},#{levelServiceDisCount},#{levelProducteDisCount})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.VipLevel" >
+    update vipLevel
+    set
+	    levelName=#{levelName},
+	    levelServiceDisCount=#{levelServiceDisCount},
+	    levelProducteDisCount=#{levelProducteDisCount}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from vipLevel where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from vipLevel
+  </select>
+  <sql id="conditionSql">
+  	<where>
+  	</where>
+  </sql>
+  <select id="queryByCondictionCount" resultType="long">
+  	select count(*) from vipLevel
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryByConditionResult" resultMap="BaseResultMap">
+  	select * from vipLevel
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+</mapper>

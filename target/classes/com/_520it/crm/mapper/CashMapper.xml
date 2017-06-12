@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.CashMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.Cash" >
+    <id column="id" property="id"  />
+	<result column="totalCostPrice" property="totalCostPrice"  />
+	<result column="amount" property="amount"  />
+	<result column="totalSalePrice" property="totalSalePrice"  />
+	<result column="salePrice" property="salePrice"  />
+	<result column="proSn" property="proSn"  />
+	<result column="number" property="number"  />
+	<result column="costPrice" property="costPrice"  />
+	<result column="proName" property="proName"  />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from cash where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.Cash" useGeneratedKeys="true" keyProperty="id" >
+    insert into cash 
+    (totalCostPrice,amount,totalSalePrice,salePrice,proSn,costPrice,proName)
+    values 
+    (#{totalCostPrice},#{amount},#{totalSalePrice},#{salePrice},#{proSn},#{costPrice},#{proName})
+  </insert>
+
+    <insert id="selectSingleRowById" parameterType="long">
+
+    </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Cash" >
+    update cash
+    set
+	    totalCostPrice=#{totalCostPrice},
+	    amount=#{amount},
+	    totalSalePrice=#{totalSalePrice},
+	    salePrice=#{salePrice},
+	    proSn=#{proSn},
+	    costPrice=#{costPrice},
+	    proName=#{proName}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from cash where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from cash
+  </select>
+  <sql id="conditionSql">
+  	<where>
+  	</where>
+  </sql>
+  <select id="queryByCondictionCount" resultType="long">
+  	select count(*) from cash
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryByConditionResult" resultMap="BaseResultMap">
+  	select * from cash
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+
+    <select id="listPrice" resultType="java.math.BigDecimal">
+        select SUM(c.totalCostPrice)   from cash  c
+    </select>
+    <select id="listPriceSale" resultType="java.math.BigDecimal">
+        select SUM(c.totalSalePrice)   from cash  c
+    </select>
+    <insert id="saveBill" parameterType="com._520it.crm.domain.PetService">
+        INSERT into cash (proSn,proName,costPrice,amount,number) VALUES (#{id},concat(#{petName},' ',#{serviceProject}),#{servicePrice},1,#{tel})
+</insert>
+    <delete id="clear" parameterType="java.lang.String" >
+        delete from cash where number=#{number}
+    </delete>
+    <select id="listNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT * from cash where number=#{number}
+    </select>
+</mapper>

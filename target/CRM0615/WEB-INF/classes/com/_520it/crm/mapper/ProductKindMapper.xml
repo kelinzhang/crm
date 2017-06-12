@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.ProductKindMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.ProductKind" >
+    <id column="id" property="id"  />
+	<result column="name" property="name"  />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from productKind where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.ProductKind" useGeneratedKeys="true" keyProperty="id" >
+    insert into productKind 
+    (name)
+    values 
+    (#{name})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.ProductKind" >
+    update productKind
+    set
+	    name=#{name}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from productKind where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from productKind
+  </select>
+  <sql id="conditionSql">
+  	<where>
+  	</where>
+  </sql>
+  <select id="queryByCondictionCount" resultType="long">
+  	select count(*) from productKind
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryByConditionResult" resultMap="BaseResultMap">
+  	select * from productKind
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+</mapper>

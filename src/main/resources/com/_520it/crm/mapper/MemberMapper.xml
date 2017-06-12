@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.MemberMapper">
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.Member">
+        <id column="id" property="id"/>
+        <result column="balance" property="balance"/>
+        <result column="address" property="address"/>
+        <result column="name" property="name"/>
+        <result column="number" property="number"/>
+        <result column="gender" property="gender"/>
+        <result column="credit" property="credit"/>
+        <result column="consume" property="consume"/>
+        <association property="level" javaType="com._520it.crm.domain.VipLevel">
+            <id column="level_id" property="id"/>
+            <result column="levelName" property="levelName"/>
+            <result column="productCount" property="levelProducteDisCount"/>
+            <result column="serviceCount" property="levelServiceDisCount"/>
+        </association>
+        <collection property="pets" ofType="com._520it.crm.domain.Pet">
+            <result column="p_petName" property="petName"/>
+            <result column="p_sex" property="sex"/>
+        </collection>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="long">
+    delete from member where id = #{id}
+  </delete>
+    <insert id="insert" parameterType="com._520it.crm.domain.Member" useGeneratedKeys="true" keyProperty="id">
+    insert into member 
+    (balance,level_id,address,name,number,credit,consume)
+    values 
+    (#{balance},#{level.id},#{address},#{name},#{number},#{credit},#{consume}) </insert>
+    <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Member">
+        update member
+        <set>
+            <if test="balance!=null">
+                balance=#{balance},
+            </if>
+            <if test="level.id!=null">
+                level_id=#{level.id},
+            </if>
+            <if test="address!=null">
+                address=#{address},
+            </if>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="number!=null">
+                number=#{number},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender},
+            </if>
+            <if test="credit!=null">
+                credit=#{credit},
+            </if>
+            <if test="consume!=null">
+                consume=#{consume}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long">
+    select * from member where id = #{id}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select * from member
+  </select>
+    <sql id="conditionSql">
+        <where>
+        </where>
+    </sql>
+    <select id="queryByCondictionCount" resultType="long">
+        select count(*) from member
+        <include refid="conditionSql"/>
+    </select>
+    <select id="queryByConditionResult" resultMap="BaseResultMap">
+        select * from member
+        <include refid="conditionSql"/>
+        limit #{start},#{rows}
+    </select>
+    <select id="queryByMember" resultMap="BaseResultMap" parameterType="java.lang.String">
+     select m.id,m.name,m.balance,v.id as level_id,v.levelName,v.levelProducteDisCount as productCount,v.levelServiceDisCount as serviceCount
+      from member m LEFT JOIN viplevel v
+      ON(m.level_id=v.id) where m.number=#{number}
+    </select>
+    <select id="queryBack" resultMap="BaseResultMap">
+        select  m.name,m.number,p.petName as p_petName,p.sex as p_sex from member m left join pet p on (m.id=p.member_id) where m.number = #{tel}
+    </select>
+      <select id="selectByNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+         SELECT * FROM member WHERE number = #{number}
+      </select>
+    <select id="memberChart" resultType="com._520it.crm.domain.Member">
+        SELECT m.number,m.consume from member m
+    </select>
+</mapper>
